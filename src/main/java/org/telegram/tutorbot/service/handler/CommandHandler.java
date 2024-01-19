@@ -1,15 +1,27 @@
 package org.telegram.tutorbot.service.handler;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.tutorbot.bot.Bot;
 import org.telegram.tutorbot.service.data.DefaultMessage;
+import org.telegram.tutorbot.service.factory.KeyboardFactory;
+
+import java.util.List;
+
 import static org.telegram.tutorbot.service.data.Command.*;
 
 @Service
 public class CommandHandler {
+    private final KeyboardFactory keyboardFactory;
+
+    @Autowired
+    public CommandHandler(KeyboardFactory keyboardFactory) {
+        this.keyboardFactory = keyboardFactory;
+    }
+
     public BotApiMethod<?> answer(Message message, Bot bot) {
         String command = message.getText();
         switch (command) {
@@ -29,14 +41,14 @@ public class CommandHandler {
     }
 
     private BotApiMethod<?> handleUnknownCommand(Message message) {
-        String messageText = DefaultMessage.getRandomMessage();
+        String messageText = DefaultMessage.getDefaultMessage();
         return sendMessage(message, messageText);
     }
 
     private BotApiMethod<?> feedback(Message message) {
         String textMessage = """
                 📍 Ссылки для обратной связи (с отцом Владика):
-                
+                                
                 GitHub - https://github.com/v-lyutin
                 Telegram - https://t.me/wurhez
                 """;
@@ -71,7 +83,15 @@ public class CommandHandler {
                 📌 Веду контроль успеваемости (дааа, бойся меня)
                 """;
 
-        return sendMessage(message, messageText);
+        return SendMessage.builder()
+                .chatId(message.getChatId())
+                .replyMarkup(keyboardFactory.getInlineKeyboard(
+                        List.of("Помощь", "Обратная связь"),
+                        List.of(2),
+                        List.of("help", "feedback")
+                ))
+                .text(messageText)
+                .build();
     }
 
     private BotApiMethod<?> sendMessage(Message message, String messageText) {
