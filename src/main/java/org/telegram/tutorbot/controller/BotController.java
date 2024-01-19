@@ -23,17 +23,6 @@ public class BotController {
 
     @PostMapping
     public BotApiMethod<?> listener(@RequestBody Update update) {
-        if (update.hasMessage()) {
-            return echo(update.getMessage());
-        }
-
         return bot.onWebhookUpdateReceived(update);
-    }
-
-    private BotApiMethod<?> echo(Message message) {
-        return SendMessage.builder()
-                .chatId(message.getChatId())
-                .text(message.getText())
-                .build();
     }
 }
