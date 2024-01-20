@@ -1,10 +1,9 @@
 package org.telegram.tutorbot.user.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import org.telegram.tutorbot.user.model.enums.Action;
+import org.telegram.tutorbot.user.model.enums.Role;
 
 @Getter
 @Setter
@@ -17,4 +16,14 @@ public class User {
     @Id
     @Column(name = "id")
     private Long chatId;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private Action action;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_details_id")
+    private UserDetails userDetails;
 }
