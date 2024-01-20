@@ -1,12 +1,12 @@
-package org.telegram.tutorbot.service.handler;
+package org.telegram.tutorbot.bot.service.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.tutorbot.bot.Bot;
-import org.telegram.tutorbot.service.manager.impl.*;
-import static org.telegram.tutorbot.service.data.Command.*;
+import org.telegram.tutorbot.bot.service.manager.impl.*;
+import static org.telegram.tutorbot.bot.service.data.Command.*;
 
 @Service
 public class CommandHandler {

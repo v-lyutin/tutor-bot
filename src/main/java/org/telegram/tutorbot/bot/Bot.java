@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.tutorbot.config.BotConfig;
-import org.telegram.tutorbot.service.UpdateDispatcher;
+import org.telegram.tutorbot.bot.config.BotConfig;
+import org.telegram.tutorbot.bot.service.UpdateDispatcher;
 
 @Component
 public class Bot extends TelegramWebhookBot {

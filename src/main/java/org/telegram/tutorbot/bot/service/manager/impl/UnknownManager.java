@@ -1,10 +1,10 @@
-package org.telegram.tutorbot.service.manager.impl;
+package org.telegram.tutorbot.bot.service.manager.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.tutorbot.service.factory.AnswerMethodFactory;
+import org.telegram.tutorbot.bot.service.factory.AnswerMethodFactory;
 import java.util.List;
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package org.telegram.tutorbot.service.manager.impl;
+package org.telegram.tutorbot.bot.service.manager.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,11 +7,11 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.tutorbot.bot.Bot;
-import org.telegram.tutorbot.service.factory.AnswerMethodFactory;
-import org.telegram.tutorbot.service.factory.KeyboardFactory;
-import org.telegram.tutorbot.service.manager.AbstractManager;
+import org.telegram.tutorbot.bot.service.factory.AnswerMethodFactory;
+import org.telegram.tutorbot.bot.service.factory.KeyboardFactory;
+import org.telegram.tutorbot.bot.service.manager.AbstractManager;
 import java.util.List;
-import static org.telegram.tutorbot.service.data.CallbackData.*;
+import static org.telegram.tutorbot.bot.service.data.CallbackData.*;
 
 @Component
 public class StartManager implements AbstractManager {

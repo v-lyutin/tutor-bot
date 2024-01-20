@@ -3,7 +3,7 @@ package org.telegram.tutorbot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.telegram.tutorbot.config.BotConfig;
+import org.telegram.tutorbot.bot.config.BotConfig;
 
 @SpringBootApplication
 @EnableConfigurationProperties(BotConfig.class)

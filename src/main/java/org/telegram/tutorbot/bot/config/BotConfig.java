@@ -1,4 +1,4 @@
-package org.telegram.tutorbot.config;
+package org.telegram.tutorbot.bot.config;
 
 import lombok.Getter;
 import lombok.Setter;

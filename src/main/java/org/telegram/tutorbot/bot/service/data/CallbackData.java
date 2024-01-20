@@ -1,4 +1,4 @@
-package org.telegram.tutorbot.service.data;
+package org.telegram.tutorbot.bot.service.data;
 
 public class CallbackData {
     public static final String FEEDBACK = "feedback";
