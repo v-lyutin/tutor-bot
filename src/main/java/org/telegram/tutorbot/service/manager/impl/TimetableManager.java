@@ -104,7 +104,7 @@ public class TimetableManager implements AbstractManager {
         );
         return answerMethodFactory.getEditMessage(
                 callbackQuery,
-                "✂\uFE0F Выбери занятие, которое хочешь удалить из вашего расписания",
+                "✂\uFE0F Выбери занятие, которое хочешь удалить из своего расписания",
                 keyboard);
     }
 }

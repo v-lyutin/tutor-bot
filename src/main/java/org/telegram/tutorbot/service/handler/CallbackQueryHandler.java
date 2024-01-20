@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.tutorbot.bot.Bot;
-import org.telegram.tutorbot.service.manager.impl.FeedbackManager;
-import org.telegram.tutorbot.service.manager.impl.HelpManager;
-import org.telegram.tutorbot.service.manager.impl.TaskManager;
-import org.telegram.tutorbot.service.manager.impl.TimetableManager;
+import org.telegram.tutorbot.service.manager.impl.*;
 
 import static org.telegram.tutorbot.service.data.CallbackData.*;
 
@@ -18,16 +15,19 @@ public class CallbackQueryHandler {
     private final HelpManager helpManager;
     private final TimetableManager timetableManager;
     private final TaskManager taskManager;
+    private final ProgressControlManager progressControlManager;
 
     @Autowired
     public CallbackQueryHandler(FeedbackManager feedbackManager,
                                 HelpManager helpManager,
                                 TimetableManager timetableManager,
-                                TaskManager taskManager) {
+                                TaskManager taskManager,
+                                ProgressControlManager progressControlManager) {
         this.feedbackManager = feedbackManager;
         this.helpManager = helpManager;
         this.timetableManager = timetableManager;
         this.taskManager = taskManager;
+        this.progressControlManager = progressControlManager;
     }
 
     public BotApiMethod<?> answer(CallbackQuery callbackQuery, Bot bot) {
@@ -38,6 +38,8 @@ public class CallbackQueryHandler {
             return timetableManager.answerCallbackQuery(callbackQuery, bot);
         } else if (TASK.equals(key)) {
             return taskManager.answerCallbackQuery(callbackQuery, bot);
+        } else if (PROGRESS.equals(key)) {
+            return progressControlManager.answerCallbackQuery(callbackQuery, bot);
         }
 
         switch (callbackData) {

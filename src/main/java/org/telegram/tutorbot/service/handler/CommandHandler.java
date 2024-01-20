@@ -16,6 +16,7 @@ public class CommandHandler {
     private final UnknownManager unknownManager;
     private final TimetableManager timetableManager;
     private final TaskManager taskManager;
+    private final ProgressControlManager progressControlManager;
 
     @Autowired
     public CommandHandler(StartManager startManager,
@@ -23,13 +24,15 @@ public class CommandHandler {
                           FeedbackManager feedbackManager,
                           UnknownManager unknownManager,
                           TimetableManager timetableManager,
-                          TaskManager taskManager) {
+                          TaskManager taskManager,
+                          ProgressControlManager progressControlManager) {
         this.startManager = startManager;
         this.helpManager = helpManager;
         this.feedbackManager = feedbackManager;
         this.unknownManager = unknownManager;
         this.timetableManager = timetableManager;
         this.taskManager = taskManager;
+        this.progressControlManager = progressControlManager;
     }
 
     public BotApiMethod<?> answer(Message message, Bot bot) {
@@ -49,6 +52,9 @@ public class CommandHandler {
             }
             case TASK_COMMAND -> {
                 return taskManager.answerCommand(message, bot);
+            }
+            case PROGRESS_COMMAND -> {
+                return progressControlManager.answerCommand(message, bot);
             }
             default -> {
                 return unknownManager.answerCommand(message);
