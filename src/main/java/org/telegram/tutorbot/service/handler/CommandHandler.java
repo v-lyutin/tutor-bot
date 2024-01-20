@@ -3,37 +3,38 @@ package org.telegram.tutorbot.service.handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.tutorbot.bot.Bot;
-import org.telegram.tutorbot.service.data.DefaultMessage;
-import org.telegram.tutorbot.service.factory.KeyboardFactory;
 import org.telegram.tutorbot.service.manager.FeedbackManager;
 import org.telegram.tutorbot.service.manager.HelpManager;
-import java.util.List;
+import org.telegram.tutorbot.service.manager.StartManager;
+import org.telegram.tutorbot.service.manager.UnknownManager;
+
 import static org.telegram.tutorbot.service.data.Command.*;
-import static org.telegram.tutorbot.service.data.CallbackData.*;
 
 @Service
 public class CommandHandler {
-    private final KeyboardFactory keyboardFactory;
+    private final StartManager startManager;
     private final HelpManager helpManager;
     private final FeedbackManager feedbackManager;
+    private final UnknownManager unknownManager;
 
     @Autowired
-    public CommandHandler(KeyboardFactory keyboardFactory,
+    public CommandHandler(StartManager startManager,
                           HelpManager helpManager,
-                          FeedbackManager feedbackManager) {
-        this.keyboardFactory = keyboardFactory;
+                          FeedbackManager feedbackManager,
+                          UnknownManager unknownManager) {
+        this.startManager = startManager;
         this.helpManager = helpManager;
         this.feedbackManager = feedbackManager;
+        this.unknownManager = unknownManager;
     }
 
     public BotApiMethod<?> answer(Message message, Bot bot) {
         String command = message.getText();
         switch (command) {
             case START_COMMAND -> {
-                return start(message);
+                return startManager.answerCommand(message);
             }
             case FEEDBACK_COMMAND -> {
                 return feedbackManager.answerCommand(message);
@@ -42,44 +43,9 @@ public class CommandHandler {
                 return helpManager.answerCommand(message);
             }
             default -> {
-                return handleUnknownCommand(message);
+                return unknownManager.answerCommand(message);
             }
         }
-    }
-
-    private BotApiMethod<?> handleUnknownCommand(Message message) {
-        String messageText = DefaultMessage.getDefaultMessage();
-        return sendMessage(message, messageText);
-    }
-
-    private BotApiMethod<?> start(Message message) {
-        String messageText = """
-                Подручный Владик приветствует. Я создан для упрощения взаимодействия репититора и ученика.
-                                        
-                Что вообще умею?
-                                        
-                📌 Составляю расписание
-                📌 Прикрепляю домашние задания
-                📌 Веду контроль успеваемости (дааа, бойся меня)
-                """;
-
-        return SendMessage.builder()
-                .chatId(message.getChatId())
-                .replyMarkup(keyboardFactory.getInlineKeyboard(
-                        List.of("Помощь", "Обратная связь"),
-                        List.of(2),
-                        List.of(HELP, FEEDBACK)
-                ))
-                .text(messageText)
-                .build();
-    }
-
-    private BotApiMethod<?> sendMessage(Message message, String messageText) {
-        return SendMessage.builder()
-                .chatId(message.getChatId())
-                .text(messageText)
-                .disableWebPagePreview(true)
-                .build();
     }
 }
 
