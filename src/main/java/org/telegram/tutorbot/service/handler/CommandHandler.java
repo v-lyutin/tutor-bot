@@ -8,31 +8,38 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.tutorbot.bot.Bot;
 import org.telegram.tutorbot.service.data.DefaultMessage;
 import org.telegram.tutorbot.service.factory.KeyboardFactory;
-
+import org.telegram.tutorbot.service.manager.FeedbackManager;
+import org.telegram.tutorbot.service.manager.HelpManager;
 import java.util.List;
-
 import static org.telegram.tutorbot.service.data.Command.*;
+import static org.telegram.tutorbot.service.data.CallbackData.*;
 
 @Service
 public class CommandHandler {
     private final KeyboardFactory keyboardFactory;
+    private final HelpManager helpManager;
+    private final FeedbackManager feedbackManager;
 
     @Autowired
-    public CommandHandler(KeyboardFactory keyboardFactory) {
+    public CommandHandler(KeyboardFactory keyboardFactory,
+                          HelpManager helpManager,
+                          FeedbackManager feedbackManager) {
         this.keyboardFactory = keyboardFactory;
+        this.helpManager = helpManager;
+        this.feedbackManager = feedbackManager;
     }
 
     public BotApiMethod<?> answer(Message message, Bot bot) {
         String command = message.getText();
         switch (command) {
-            case START -> {
+            case START_COMMAND -> {
                 return start(message);
             }
-            case FEEDBACK -> {
-                return feedback(message);
+            case FEEDBACK_COMMAND -> {
+                return feedbackManager.answerCommand(message);
             }
-            case HELP -> {
-                return help(message);
+            case HELP_COMMAND -> {
+                return helpManager.answerCommand(message);
             }
             default -> {
                 return handleUnknownCommand(message);
@@ -42,33 +49,6 @@ public class CommandHandler {
 
     private BotApiMethod<?> handleUnknownCommand(Message message) {
         String messageText = DefaultMessage.getDefaultMessage();
-        return sendMessage(message, messageText);
-    }
-
-    private BotApiMethod<?> feedback(Message message) {
-        String textMessage = """
-                📍 Ссылки для обратной связи (с отцом Владика):
-                                
-                GitHub - https://github.com/v-lyutin
-                Telegram - https://t.me/wurhez
-                """;
-
-        return sendMessage(message, textMessage);
-    }
-
-    private BotApiMethod<?> help(Message message) {
-        String messageText = """
-                📍 Доступные команды:
-                - start
-                - help
-                - feedback
-                                                                
-                📍 Доступные функции:
-                - Расписание
-                - Домашнее задание
-                - Контроль успеваемости
-                """;
-
         return sendMessage(message, messageText);
     }
 
@@ -88,7 +68,7 @@ public class CommandHandler {
                 .replyMarkup(keyboardFactory.getInlineKeyboard(
                         List.of("Помощь", "Обратная связь"),
                         List.of(2),
-                        List.of("help", "feedback")
+                        List.of(HELP, FEEDBACK)
                 ))
                 .text(messageText)
                 .build();
