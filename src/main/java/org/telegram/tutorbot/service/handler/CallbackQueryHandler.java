@@ -5,29 +5,47 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.tutorbot.bot.Bot;
-import org.telegram.tutorbot.service.manager.FeedbackManager;
-import org.telegram.tutorbot.service.manager.HelpManager;
+import org.telegram.tutorbot.service.manager.impl.FeedbackManager;
+import org.telegram.tutorbot.service.manager.impl.HelpManager;
+import org.telegram.tutorbot.service.manager.impl.TaskManager;
+import org.telegram.tutorbot.service.manager.impl.TimetableManager;
+
 import static org.telegram.tutorbot.service.data.CallbackData.*;
 
 @Service
 public class CallbackQueryHandler {
     private final FeedbackManager feedbackManager;
     private final HelpManager helpManager;
+    private final TimetableManager timetableManager;
+    private final TaskManager taskManager;
 
     @Autowired
-    public CallbackQueryHandler(FeedbackManager feedbackManager, HelpManager helpManager) {
+    public CallbackQueryHandler(FeedbackManager feedbackManager,
+                                HelpManager helpManager,
+                                TimetableManager timetableManager,
+                                TaskManager taskManager) {
         this.feedbackManager = feedbackManager;
         this.helpManager = helpManager;
+        this.timetableManager = timetableManager;
+        this.taskManager = taskManager;
     }
 
     public BotApiMethod<?> answer(CallbackQuery callbackQuery, Bot bot) {
         String callbackData = callbackQuery.getData();
+        String key = callbackData.split("_")[0];
+
+        if (TIMETABLE.equals(key)) {
+            return timetableManager.answerCallbackQuery(callbackQuery, bot);
+        } else if (TASK.equals(key)) {
+            return taskManager.answerCallbackQuery(callbackQuery, bot);
+        }
+
         switch (callbackData) {
             case FEEDBACK -> {
-                return feedbackManager.answerCallbackQuery(callbackQuery);
+                return feedbackManager.answerCallbackQuery(callbackQuery, bot);
             }
             case HELP -> {
-                return helpManager.answerCallbackQuery(callbackQuery);
+                return helpManager.answerCallbackQuery(callbackQuery, bot);
             }
         }
 

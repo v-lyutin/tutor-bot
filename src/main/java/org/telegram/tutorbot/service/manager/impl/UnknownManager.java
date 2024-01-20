@@ -1,4 +1,4 @@
-package org.telegram.tutorbot.service.manager;
+package org.telegram.tutorbot.service.manager.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
