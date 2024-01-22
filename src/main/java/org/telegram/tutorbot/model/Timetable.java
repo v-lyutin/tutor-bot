@@ -3,6 +3,7 @@ package org.telegram.tutorbot.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.DayOfWeek;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -32,4 +33,12 @@ public class Timetable {
 
     @Column(name = "minute")
     private Short minute;
+
+    @ManyToMany
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "timetable_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"),
+            name = "users_timetable"
+    )
+    private List<User> users;
 }
