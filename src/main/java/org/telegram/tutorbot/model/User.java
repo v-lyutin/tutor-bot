@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.telegram.tutorbot.model.enums.Action;
 import org.telegram.tutorbot.model.enums.Role;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +22,7 @@ public class User {
     private Long chatId;
 
     @Column(name = "token", unique = true)
-    private UUID token;
+    private String token;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -42,7 +44,18 @@ public class User {
     @PrePersist
     private void generateUniqueToken() {
         if (token == null) {
-            token = UUID.randomUUID();
+            token = UUID.randomUUID().toString();
         }
+    }
+
+    public void addUser(User user) {
+        if (users.isEmpty()) {
+            users = new ArrayList<>();
+        }
+        users.add(user);
+    }
+
+    public void refreshToken() {
+        token = UUID.randomUUID().toString();
     }
 }

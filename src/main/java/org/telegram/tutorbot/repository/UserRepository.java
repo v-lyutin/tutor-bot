@@ -6,4 +6,7 @@ import org.telegram.tutorbot.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    User findUserByChatId(Long chatId);
+
+    User findUserByToken(String token);
 }

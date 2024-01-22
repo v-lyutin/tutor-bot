@@ -8,4 +8,5 @@ public class Command {
     public static final String TASK_COMMAND = "/task";
     public static final String PROGRESS_COMMAND = "/progress";
     public static final String PROFILE_COMMAND = "/profile";
+    public static final String SEARCH_COMMAND = "/search";
 }
