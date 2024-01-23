@@ -29,7 +29,13 @@ public class CallbackData {
     public static final String TIMETABLE_BACK = "timetable_back_";
     public static final String FINISH = "finish";
     public static final String TIMETABLE_FINISH = "timetable_finish_";
+    public static final String REMOVE = "remove";
     public static final String TIMETABLE_REMOVE = "timetable_remove";
+    public static final String TIMETABLE_REMOVE_WEEKDAY = "timetable_remove_weekday_";
+    public static final String FINAL = "final";
+    public static final String TIMETABLE_REMOVE_FINAL = "timetable_remove_final_";
+    public static final String POS = "pos";
+    public static final String TIMETABLE_REMOVE_POS = "timetable_remove_pos_";
     public static final String TASK = "task";
     public static final String TASK_CREATE = "task_create";
     public static final String PROGRESS = "progress";
