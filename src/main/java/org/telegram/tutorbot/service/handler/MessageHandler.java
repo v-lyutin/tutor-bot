@@ -9,16 +9,21 @@ import org.telegram.tutorbot.model.User;
 import org.telegram.tutorbot.model.enums.Action;
 import org.telegram.tutorbot.repository.UserRepository;
 import org.telegram.tutorbot.service.manager.impl.SearchManager;
+import org.telegram.tutorbot.service.manager.impl.TimetableManager;
 
 @Service
 public class MessageHandler {
     private final SearchManager searchManager;
     private final UserRepository userRepository;
+    private final TimetableManager timetableManager;
 
     @Autowired
-    public MessageHandler(SearchManager searchManager, UserRepository userRepository) {
+    public MessageHandler(SearchManager searchManager,
+                          UserRepository userRepository,
+                          TimetableManager timetableManager) {
         this.searchManager = searchManager;
         this.userRepository = userRepository;
+        this.timetableManager = timetableManager;
     }
 
     public BotApiMethod<?> answer(Message message, Bot bot) {
@@ -27,6 +32,9 @@ public class MessageHandler {
         switch (action) {
             case SENDING_TOKEN -> {
                 return searchManager.answerMessage(message, bot);
+            }
+            case SENDING_TITLE, SENDING_DESCRIPTION -> {
+                return timetableManager.answerMessage(message, bot);
             }
         }
         return null;

@@ -2,7 +2,9 @@ package org.telegram.tutorbot.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.DayOfWeek;
+import org.telegram.tutorbot.model.enums.WeekDay;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +28,7 @@ public class Timetable {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private DayOfWeek dayOfWeek;
+    private WeekDay weekDay;
 
     @Column(name = "hour")
     private Short hour;
@@ -41,4 +43,14 @@ public class Timetable {
             name = "users_timetable"
     )
     private List<User> users;
+
+    @Column(name = "in_creation")
+    private Boolean inCreation;
+
+    public void addUser(User user) {
+        if (users == null) {
+            users = new ArrayList<>();
+        }
+        users.add(user);
+    }
 }
