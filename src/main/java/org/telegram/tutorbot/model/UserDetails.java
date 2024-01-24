@@ -31,5 +31,5 @@ public class UserDetails {
     private LocalDateTime registeredAt;
 
     @Column(name = "now_updating_timetable")
-    String timetableId;
+    private String timetableId;
 }

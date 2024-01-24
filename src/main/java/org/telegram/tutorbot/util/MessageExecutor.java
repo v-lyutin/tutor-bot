@@ -10,6 +10,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.tutorbot.bot.Bot;
 import org.telegram.tutorbot.util.factory.AnswerMethodFactory;
 
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @Component
 public class MessageExecutor {
@@ -40,6 +43,14 @@ public class MessageExecutor {
 
         try {
             bot.execute(answerMethodFactory.getDeleteMessage(chatId, messageId));
+        } catch (TelegramApiException exception) {
+            log.error(exception.getMessage());
+        }
+    }
+
+    public void executeSetCommands(Bot bot, Long chatId, Map<String, String> commands) {
+        try {
+            bot.execute(answerMethodFactory.setCommands(chatId, commands));
         } catch (TelegramApiException exception) {
             log.error(exception.getMessage());
         }

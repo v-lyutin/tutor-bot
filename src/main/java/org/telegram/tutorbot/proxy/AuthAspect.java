@@ -15,7 +15,6 @@ import org.telegram.tutorbot.model.enums.Role;
 import org.telegram.tutorbot.repository.UserRepository;
 import org.telegram.tutorbot.service.manager.impl.AuthManager;
 
-
 @Aspect
 @Order(100)
 @Component
@@ -24,7 +23,8 @@ public class AuthAspect {
     private final AuthManager authManager;
 
     @Autowired
-    public AuthAspect(UserRepository userRepository, AuthManager authManager) {
+    public AuthAspect(UserRepository userRepository,
+                      AuthManager authManager) {
         this.userRepository = userRepository;
         this.authManager = authManager;
     }
@@ -39,13 +39,9 @@ public class AuthAspect {
         User user;
 
         if (update.hasMessage()) {
-            user = userRepository
-                    .findById(update.getMessage().getChatId())
-                    .orElseThrow();
+            user = userRepository.findUserByChatId(update.getMessage().getChatId());
         } else if (update.hasCallbackQuery()) {
-            user = userRepository
-                    .findById(update.getCallbackQuery().getMessage().getChatId())
-                    .orElseThrow();
+            user = userRepository.findUserByChatId(update.getCallbackQuery().getMessage().getChatId());
         } else {
             return joinPoint.proceed();
         }

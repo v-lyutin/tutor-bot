@@ -3,7 +3,6 @@ package org.telegram.tutorbot.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.telegram.tutorbot.model.enums.WeekDay;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

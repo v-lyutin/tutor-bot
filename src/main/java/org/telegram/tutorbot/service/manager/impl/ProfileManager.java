@@ -54,12 +54,12 @@ public class ProfileManager implements AbstractManager {
 
     private BotApiMethod<?> showProfile(Message message) {
         Long chatId = message.getChatId();
+        String profileDescription = generateUserDescription(chatId);
         InlineKeyboardMarkup keyboard = keyboardFactory.getInlineKeyboard(
-                List.of("Обновить токен"),
+                List.of("Обновить токен ♻️"),
                 List.of(1),
                 List.of(PROFILE_REFRESH_TOKEN)
         );
-        String profileDescription = generateUserDescription(chatId);
 
         return answerMethodFactory.getSendMessage(
                 chatId,
@@ -70,12 +70,12 @@ public class ProfileManager implements AbstractManager {
 
     private BotApiMethod<?> showProfile(CallbackQuery callbackQuery) {
         Long chatId = callbackQuery.getMessage().getChatId();
+        String profileDescription = generateUserDescription(chatId);
         InlineKeyboardMarkup keyboard = keyboardFactory.getInlineKeyboard(
-                List.of("Обновить токен"),
+                List.of("Обновить токен ♻️"),
                 List.of(1),
                 List.of(PROFILE_REFRESH_TOKEN)
         );
-        String profileDescription = generateUserDescription(chatId);
 
         return answerMethodFactory.getEditMessage(
                 callbackQuery,
@@ -94,21 +94,20 @@ public class ProfileManager implements AbstractManager {
     private String generateUserDescription(Long chatId) {
         User user = userRepository.findUserByChatId(chatId);
         UserDetails userDetails = user.getUserDetails();
-        StringBuilder userDescription = new StringBuilder("\uD83D\uDC64 Твой профиль\n\n");
-        String username;
+        String username = (userDetails.getFirstName() == null) ? userDetails.getUsername() : userDetails.getFirstName();
+        String userRole = user.getRole().getValue();
+        String token = user.getToken();
 
-        if (userDetails.getFirstName() == null) {
-            username = userDetails.getUsername();
-        } else {
-            username = userDetails.getFirstName();
-        }
-
-        userDescription
-                .append("▪\uFE0F Имя: ").append(username)
-                .append("\n▪\uFE0F Роль: ").append(user.getRole().getValue())
-                .append("\n▪\uFE0F Уникальный токен:\n ").append(user.getToken())
-                .append("\n\n⚠\uFE0F Токен необходим для установки связи между преподавателем и учеником");
-
-        return userDescription.toString();
+        return String.format("""
+                👤<b> Твой профиль</b>
+                
+                🔹 Имя: <i>%s</i>
+                🔹 Роль: <i>%s</i>
+                🔹 Уникальный токен:
+                
+                <code>%s</code>
+                
+                ⚠ <i>Токен необходим для установки связи между преподавателем и учеником</i>
+                """, username, userRole, token);
     }
 }

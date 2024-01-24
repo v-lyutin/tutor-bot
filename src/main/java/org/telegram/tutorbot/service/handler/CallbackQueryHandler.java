@@ -10,6 +10,7 @@ import static org.telegram.tutorbot.util.data.CallbackData.*;
 
 @Service
 public class CallbackQueryHandler {
+    private final StartManager startManager;
     private final FeedbackManager feedbackManager;
     private final HelpManager helpManager;
     private final TimetableManager timetableManager;
@@ -20,7 +21,8 @@ public class CallbackQueryHandler {
     private final SearchManager searchManager;
 
     @Autowired
-    public CallbackQueryHandler(FeedbackManager feedbackManager,
+    public CallbackQueryHandler(StartManager startManager,
+                                FeedbackManager feedbackManager,
                                 HelpManager helpManager,
                                 TimetableManager timetableManager,
                                 TaskManager taskManager,
@@ -28,6 +30,7 @@ public class CallbackQueryHandler {
                                 ProgressControlManager progressControlManager,
                                 ProfileManager profileManager,
                                 SearchManager searchManager) {
+        this.startManager = startManager;
         this.feedbackManager = feedbackManager;
         this.helpManager = helpManager;
         this.timetableManager = timetableManager;
@@ -64,6 +67,9 @@ public class CallbackQueryHandler {
         }
 
         switch (callbackData) {
+            case START -> {
+                return startManager.answerCallbackQuery(callbackQuery, bot);
+            }
             case FEEDBACK -> {
                 return feedbackManager.answerCallbackQuery(callbackQuery, bot);
             }

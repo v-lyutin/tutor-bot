@@ -7,8 +7,9 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.tutorbot.bot.Bot;
+import org.telegram.tutorbot.util.Command;
+import org.telegram.tutorbot.util.MessageExecutor;
 import org.telegram.tutorbot.util.factory.AnswerMethodFactory;
 import org.telegram.tutorbot.util.factory.KeyboardFactory;
 import org.telegram.tutorbot.service.manager.AbstractManager;
@@ -25,14 +26,17 @@ public class AuthManager implements AbstractManager {
     private final AnswerMethodFactory answerMethodFactory;
     private final KeyboardFactory keyboardFactory;
     private final UserRepository userRepository;
+    private final MessageExecutor messageExecutor;
 
     @Autowired
     public AuthManager(AnswerMethodFactory answerMethodFactory,
                        KeyboardFactory keyboardFactory,
-                       UserRepository userRepository) {
+                       UserRepository userRepository,
+                       MessageExecutor messageExecutor) {
         this.answerMethodFactory = answerMethodFactory;
         this.keyboardFactory = keyboardFactory;
         this.userRepository = userRepository;
+        this.messageExecutor = messageExecutor;
     }
 
     @Override
@@ -60,27 +64,23 @@ public class AuthManager implements AbstractManager {
     public BotApiMethod<?> answerCallbackQuery(CallbackQuery callbackQuery, Bot bot) {
         Long chatId = callbackQuery.getMessage().getChatId();
         Integer messageId = callbackQuery.getMessage().getMessageId();
-        User user = userRepository.findById(chatId).orElseThrow();
+        User user = userRepository.findUserByChatId(chatId);
         String userRole = callbackQuery.getData();
 
         if (AUTH_TEACHER.equals(userRole)) {
+            messageExecutor.executeSetCommands(bot, chatId, Command.getCommands(Role.TEACHER));
             user.setRole(Role.TEACHER);
         } else {
+            messageExecutor.executeSetCommands(bot, chatId, Command.getCommands(Role.STUDENT));
             user.setRole(Role.STUDENT);
         }
 
         user.setAction(Action.FREE);
         userRepository.save(user);
 
-        try {
-            bot.execute(answerMethodFactory.getAnswerCallbackQuery(
-                            callbackQuery.getId(),
-                            "Авторизация прошла успешно, повтори предыдущий запрос!"
-                    )
-            );
-        } catch (TelegramApiException exception) {
-            log.error(exception.getMessage());
-        }
+        String messageText = "Авторизация прошла успешно, повтори предыдущий запрос!";
+        messageExecutor.executeAnswerCallbackQuery(bot, callbackQuery, messageText);
+
         return answerMethodFactory.getDeleteMessage(chatId, messageId);
     }
 }

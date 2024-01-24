@@ -7,6 +7,9 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.tutorbot.bot.Bot;
+import org.telegram.tutorbot.model.User;
+import org.telegram.tutorbot.model.enums.Role;
+import org.telegram.tutorbot.repository.UserRepository;
 import org.telegram.tutorbot.util.factory.AnswerMethodFactory;
 import org.telegram.tutorbot.util.factory.KeyboardFactory;
 import org.telegram.tutorbot.service.manager.AbstractManager;
@@ -17,16 +20,26 @@ import static org.telegram.tutorbot.util.data.CallbackData.*;
 public class TaskManager implements AbstractManager {
     private final AnswerMethodFactory answerMethodFactory;
     private final KeyboardFactory keyboardFactory;
+    private final UserRepository userRepository;
     private static final String TASK_TEXT = "\uD83D\uDDC2 Ты можешь добавить домашнее задание вашему ученику";
 
     @Autowired
-    public TaskManager(AnswerMethodFactory answerMethodFactory, KeyboardFactory keyboardFactory) {
+    public TaskManager(AnswerMethodFactory answerMethodFactory,
+                       KeyboardFactory keyboardFactory,
+                       UserRepository userRepository) {
         this.answerMethodFactory = answerMethodFactory;
         this.keyboardFactory = keyboardFactory;
+        this.userRepository = userRepository;
     }
 
     @Override
     public BotApiMethod<?> answerCommand(Message message, Bot bot) {
+        User user = userRepository.findUserByChatId(message.getChatId());
+
+        if(user.getRole().equals(Role.STUDENT)) {
+            return null;
+        }
+
         return getMenu(message);
     }
 

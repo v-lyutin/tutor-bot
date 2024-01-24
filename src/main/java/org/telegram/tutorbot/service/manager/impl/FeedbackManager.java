@@ -5,33 +5,51 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.tutorbot.bot.Bot;
 import org.telegram.tutorbot.util.factory.AnswerMethodFactory;
 import org.telegram.tutorbot.service.manager.AbstractManager;
+import org.telegram.tutorbot.util.factory.KeyboardFactory;
+import java.util.List;
+import static org.telegram.tutorbot.util.data.CallbackData.START;
 
 @Component
 public class FeedbackManager implements AbstractManager {
     private final AnswerMethodFactory answerMethodFactory;
+    private final KeyboardFactory keyboardFactory;
     private static final String FEEDBACK_TEXT = """
-            📍 Ссылки для обратной связи (с отцом Владика):
+            🔗 <b>Ссылочки для обратной связи:</b>
                             
-            GitHub - https://github.com/v-lyutin
-            Telegram - https://t.me/wurhez
+            ▪️<a href="https://github.com/v-lyutin">GitHub</a>
+            ▪️<a href="https://t.me/wurhez">Telegram</a>
             """;
 
     @Autowired
-    public FeedbackManager(AnswerMethodFactory answerMethodFactory) {
+    public FeedbackManager(AnswerMethodFactory answerMethodFactory, KeyboardFactory keyboardFactory) {
         this.answerMethodFactory = answerMethodFactory;
+        this.keyboardFactory = keyboardFactory;
     }
 
     @Override
     public BotApiMethod<?> answerCommand(Message message, Bot bot) {
-        return answerMethodFactory.getSendMessage(message.getChatId(), FEEDBACK_TEXT, null);
+        InlineKeyboardMarkup keyboard = keyboardFactory.getInlineKeyboard(
+                List.of("Главное меню"),
+                List.of(1),
+                List.of(START)
+        );
+
+        return answerMethodFactory.getSendMessage(message.getChatId(), FEEDBACK_TEXT, keyboard);
     }
 
     @Override
     public BotApiMethod<?> answerCallbackQuery(CallbackQuery callbackQuery, Bot bot) {
-        return answerMethodFactory.getEditMessage(callbackQuery, FEEDBACK_TEXT, null);
+        InlineKeyboardMarkup keyboard = keyboardFactory.getInlineKeyboard(
+                List.of("Назад"),
+                List.of(1),
+                List.of(START)
+        );
+
+        return answerMethodFactory.getEditMessage(callbackQuery, FEEDBACK_TEXT, keyboard);
     }
 
     @Override

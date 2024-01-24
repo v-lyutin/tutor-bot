@@ -18,13 +18,13 @@ public class StartManager implements AbstractManager {
     private final AnswerMethodFactory answerMethodFactory;
     private final KeyboardFactory keyboardFactory;
     private static final String START_TEXT = """
-            Подручный Владик приветствует. Я создан для упрощения взаимодействия репититора и ученика.
+            👋 <b>Подручный Владик приветствует. Я создан для упрощения взаимодействия репититора и ученика.
                                     
-            Что вообще умею?
+            Что вообще умею?</b>
                                     
-            📌 Составляю расписание
-            📌 Прикрепляю домашние задания
-            📌 Веду контроль успеваемости (дааа, бойся меня)
+            📌 <i><b>Составляю расписание</b></i>
+            📌 <i><b>Прикрепляю домашние задания</b></i>
+            📌 <i><b>Веду контроль успеваемости (дааа, бойся меня)</b></i>
             """;
 
     @Autowired
@@ -40,6 +40,7 @@ public class StartManager implements AbstractManager {
                 List.of(2),
                 List.of(HELP, FEEDBACK)
         );
+
         return answerMethodFactory.getSendMessage(message.getChatId(), START_TEXT, keyboard);
     }
 
@@ -50,6 +51,12 @@ public class StartManager implements AbstractManager {
 
     @Override
     public BotApiMethod<?> answerCallbackQuery(CallbackQuery callbackQuery, Bot bot) {
-        return null;
+        InlineKeyboardMarkup keyboard = keyboardFactory.getInlineKeyboard(
+                List.of("Помощь", "Обратная связь"),
+                List.of(2),
+                List.of(HELP, FEEDBACK)
+        );
+
+        return answerMethodFactory.getEditMessage(callbackQuery, START_TEXT, keyboard);
     }
 }

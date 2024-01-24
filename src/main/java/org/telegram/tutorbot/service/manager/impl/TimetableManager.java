@@ -22,6 +22,7 @@ import org.telegram.tutorbot.util.factory.KeyboardFactory;
 import org.telegram.tutorbot.service.manager.AbstractManager;
 import static org.telegram.tutorbot.util.data.CallbackData.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,6 +74,7 @@ public class TimetableManager implements AbstractManager {
     public BotApiMethod<?> answerCallbackQuery(CallbackQuery callbackQuery, Bot bot) {
         String callbackData = callbackQuery.getData();
         String[] splitCallbackData = callbackData.split("_");
+        System.out.println(Arrays.toString(splitCallbackData));
         if (splitCallbackData.length > 1 && "add".equals(splitCallbackData[1])) {
             if (splitCallbackData.length == 2 || splitCallbackData.length == 3) {
                 return add(callbackQuery, splitCallbackData);
@@ -99,29 +101,6 @@ public class TimetableManager implements AbstractManager {
             }
         }
 
-        if (splitCallbackData.length > 1) {
-            if (FINISH.equals(splitCallbackData[1])) {
-                return finish(callbackQuery, splitCallbackData, bot);
-            }
-            if (BACK.equals(splitCallbackData[1])) {
-                return back(callbackQuery, splitCallbackData);
-            }
-        }
-
-        if (splitCallbackData.length > 2 && REMOVE.equals(splitCallbackData[1])) {
-            switch (splitCallbackData[2]) {
-                case WEEKDAY -> {
-                    return getRemoveMenu(callbackQuery, splitCallbackData[3]);
-                }
-                case POS -> {
-                    return askConfirmation(callbackQuery, splitCallbackData);
-                }
-                case FINAL -> {
-                    return removeWeekDayActivity(callbackQuery, splitCallbackData[3], bot);
-                }
-            }
-        }
-
         switch (callbackData) {
             case TIMETABLE -> {
                 return getMenu(callbackQuery);
@@ -136,6 +115,27 @@ public class TimetableManager implements AbstractManager {
                     TIMETABLE_4, TIMETABLE_5, TIMETABLE_6,
                     TIMETABLE_7 -> {
                 return showDayInfo(callbackQuery);
+            }
+        }
+
+        if (FINISH.equals(splitCallbackData[1])) {
+            return finish(callbackQuery, splitCallbackData, bot);
+        }
+        if (BACK.equals(splitCallbackData[1])) {
+            return back(callbackQuery, splitCallbackData);
+        }
+
+        if (splitCallbackData.length > 2 && REMOVE.equals(splitCallbackData[1])) {
+            switch (splitCallbackData[2]) {
+                case WEEKDAY -> {
+                    return getRemoveMenu(callbackQuery, splitCallbackData[3]);
+                }
+                case POS -> {
+                    return askConfirmation(callbackQuery, splitCallbackData);
+                }
+                case FINAL -> {
+                    return removeWeekDayActivity(callbackQuery, splitCallbackData[3], bot);
+                }
             }
         }
         return null;
@@ -193,6 +193,8 @@ public class TimetableManager implements AbstractManager {
                 buttonsCallbackData
         );
 
+        System.out.println(callbackQuery.getData());
+
         return answerMethodFactory.getEditMessage(
                 callbackQuery,
                 "Выбери минуту",
@@ -200,13 +202,14 @@ public class TimetableManager implements AbstractManager {
         );
     }
 
-    private BotApiMethod<?> addMinute(CallbackQuery callbackQuery, String[] data) {
-        UUID timetableId = UUID.fromString(data[4]);
+    private BotApiMethod<?> addMinute(CallbackQuery callbackQuery, String[] splitCallbackData) {
+        UUID timetableId = UUID.fromString(splitCallbackData[4]);
         Timetable timetable = timetableRepository.findTimetableById(timetableId);
+        timetable.setMinute(Short.valueOf(splitCallbackData[3]));
+        timetableRepository.save(timetable);
+
         Long chatId = callbackQuery.getMessage().getChatId();
         User user = userRepository.findUserByChatId(chatId);
-        timetable.setMinute(Short.valueOf(data[3]));
-        timetableRepository.save(timetable);
 
         List<String> buttonsText = new ArrayList<>();
         List<String> buttonsCallbackData = new ArrayList<>();
@@ -237,6 +240,10 @@ public class TimetableManager implements AbstractManager {
                 buttonsCallbackData
         );
 
+        System.out.println("\n\n" + buttonsText);
+        System.out.println(buttonsConfiguration);
+        System.out.println(buttonsCallbackData + "\n\n");
+
         return answerMethodFactory.getEditMessage(
                 callbackQuery,
                 messageText,
@@ -244,10 +251,10 @@ public class TimetableManager implements AbstractManager {
         );
     }
 
-    private BotApiMethod<?> addUser(CallbackQuery callbackQuery, String[] data) {
-        UUID timetableId = UUID.fromString(data[4]);
+    private BotApiMethod<?> addUser(CallbackQuery callbackQuery, String[] splitCallbackData) {
+        UUID timetableId = UUID.fromString(splitCallbackData[4]);
         Timetable timetable = timetableRepository.findTimetableById(timetableId);
-        Long chatId = Long.valueOf(data[3]);
+        Long chatId = Long.valueOf(splitCallbackData[3]);
         User user = userRepository.findUserByChatId(chatId);
 
         timetable.addUser(user);
@@ -507,7 +514,7 @@ public class TimetableManager implements AbstractManager {
 
     private BotApiMethod<?> remove(CallbackQuery callbackQuery) {
         List<String> buttonsCallbackData = new ArrayList<>();
-        for (int i = 1; i <= 7 ; i++) {
+        for (int i = 1; i <= 7; i++) {
             buttonsCallbackData.add(TIMETABLE_REMOVE_WEEKDAY + i);
         }
         buttonsCallbackData.add(TIMETABLE);
@@ -548,9 +555,12 @@ public class TimetableManager implements AbstractManager {
                 buttonsCallbackData
         );
 
+        String messageText = (buttonsConfiguration.size() == 1)
+                ? "У тебя нет занятий в этот день" : "Выбери занятие, которое хочешь удалить";
+
         return answerMethodFactory.getEditMessage(
                 callbackQuery,
-                "Выбери занятие, которое хочешь убрать из расписания",
+                messageText,
                 keyboard
         );
     }
