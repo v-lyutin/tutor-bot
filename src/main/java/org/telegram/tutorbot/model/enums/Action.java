@@ -5,5 +5,6 @@ public enum Action {
     AUTH,
     SENDING_TOKEN,
     SENDING_TITLE,
-    SENDING_DESCRIPTION
+    SENDING_DESCRIPTION,
+    SENDING_TASK
 }

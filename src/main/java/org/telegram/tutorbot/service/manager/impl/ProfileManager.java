@@ -107,7 +107,8 @@ public class ProfileManager implements AbstractManager {
                 
                 <code>%s</code>
                 
-                ⚠ <i>Токен необходим для установки связи между преподавателем и учеником</i>
-                """, username, userRole, token);
+                ⚠️ <i><b>Токен необходим для установки связи между преподавателем и учеником</b></i>
+                """,
+                username, userRole, token);
     }
 }

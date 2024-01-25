@@ -2,6 +2,7 @@ package org.telegram.tutorbot.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -25,4 +26,15 @@ public class Task {
 
     @Column(name = "actual_message_id")
     private Integer messageId;
+
+    @Column(name = "in_creation")
+    private Boolean isInCreation;
+
+    @ManyToMany
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"),
+            name = "tasks_teacher_student"
+    )
+    private List<User> users;
 }
