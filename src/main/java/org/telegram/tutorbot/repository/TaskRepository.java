@@ -12,5 +12,8 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     boolean existsByUsersContainingAndIsInCreation(User user, Boolean isInCreation);
 
     Task findTaskByUsersContainingAndIsInCreation(User user, Boolean isInCreation);
+
     void deleteTaskByUsersContainingAndIsInCreation(User user, Boolean isInCreation);
+
+    Task findTaskById(UUID id);
 }

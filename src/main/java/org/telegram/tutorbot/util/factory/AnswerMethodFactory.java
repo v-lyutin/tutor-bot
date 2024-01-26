@@ -2,9 +2,12 @@ package org.telegram.tutorbot.util.factory;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.CopyMessage;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
@@ -38,6 +41,15 @@ public class AnswerMethodFactory {
                 .build();
     }
 
+    public EditMessageText getEditMessage(Long chatId, Integer messageId, String text) {
+        return EditMessageText.builder()
+                .chatId(chatId)
+                .messageId(messageId)
+                .text(text)
+                .disableWebPagePreview(true)
+                .build();
+    }
+
     public DeleteMessage getDeleteMessage(Long chatId, Integer messageId) {
         return DeleteMessage.builder()
                 .chatId(chatId)
@@ -49,6 +61,40 @@ public class AnswerMethodFactory {
         return AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQueryId)
                 .text(text)
+                .build();
+    }
+
+    public CopyMessage getCopyMessage(Long chatId, Long fromChatId, Integer messageId) {
+        return CopyMessage.builder()
+                .fromChatId(fromChatId)
+                .chatId(chatId)
+                .messageId(messageId)
+                .build();
+    }
+
+    public CopyMessage getCopyMessage(Long chatId, Long fromChatId, Integer messageId, ReplyKeyboard replyKeyboard) {
+        return CopyMessage.builder()
+                .fromChatId(fromChatId)
+                .chatId(chatId)
+                .messageId(messageId)
+                .replyMarkup(replyKeyboard)
+                .build();
+    }
+
+    public EditMessageCaption getEditMessageCaption(Long chatId, Integer messageId, String caption) {
+        return EditMessageCaption.builder()
+                .chatId(chatId)
+                .caption(caption)
+                .messageId(messageId)
+                .build();
+    }
+
+    public EditMessageReplyMarkup getEditMessageReplyMarkup(CallbackQuery callbackQuery,
+                                                            InlineKeyboardMarkup inlineKeyboardMarkup) {
+        return EditMessageReplyMarkup.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(inlineKeyboardMarkup)
                 .build();
     }
 

@@ -73,8 +73,8 @@ public class TimetableManager implements AbstractManager {
     @Override
     public BotApiMethod<?> answerCallbackQuery(CallbackQuery callbackQuery, Bot bot) {
         String callbackData = callbackQuery.getData();
+        System.out.println(callbackData);
         String[] splitCallbackData = callbackData.split("_");
-        System.out.println(Arrays.toString(splitCallbackData));
         if (splitCallbackData.length > 1 && "add".equals(splitCallbackData[1])) {
             if (splitCallbackData.length == 2 || splitCallbackData.length == 3) {
                 return add(callbackQuery, splitCallbackData);
@@ -239,10 +239,6 @@ public class TimetableManager implements AbstractManager {
                 buttonsConfiguration,
                 buttonsCallbackData
         );
-
-        System.out.println("\n\n" + buttonsText);
-        System.out.println(buttonsConfiguration);
-        System.out.println(buttonsCallbackData + "\n\n");
 
         return answerMethodFactory.getEditMessage(
                 callbackQuery,

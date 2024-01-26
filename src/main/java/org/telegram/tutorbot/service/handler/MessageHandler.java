@@ -40,7 +40,7 @@ public class MessageHandler {
             case SENDING_TITLE, SENDING_DESCRIPTION -> {
                 return timetableManager.answerMessage(message, bot);
             }
-            case SENDING_TASK -> {
+            case SENDING_TASK, SENDING_TEXT, SENDING_MEDIA -> {
                 return taskManager.answerMessage(message, bot);
             }
         }
