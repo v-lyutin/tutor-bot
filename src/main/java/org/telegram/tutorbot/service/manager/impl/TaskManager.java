@@ -122,7 +122,6 @@ public class TaskManager implements AbstractManager {
                 }
                 case CONFIRM -> {
                     return sendTask(callbackQuery, splitCallbackData[3], bot);
-
                 }
                 case CHANGE -> {
                     return askUser(callbackQuery, splitCallbackData[4]);
@@ -141,6 +140,7 @@ public class TaskManager implements AbstractManager {
         return null;
     }
 
+    //TODO: refactor
     private BotApiMethod<?> startTaskCreating(CallbackQuery callbackQuery) {
         User teacher = userRepository.findUserByChatId(callbackQuery.getMessage().getChatId());
         List<User> students = teacher.getUsers();
@@ -205,6 +205,7 @@ public class TaskManager implements AbstractManager {
         );
     }
 
+    //TODO: refactor
     private BotApiMethod<?> addTask(User user, Message message, Long chatId, Bot bot) {
         Task task = taskRepository.findTaskByUsersContainingAndIsInCreation(user, true);
         String taskId = String.valueOf(task.getId());
@@ -259,6 +260,7 @@ public class TaskManager implements AbstractManager {
         return answerMethodFactory.getDeleteMessage(chatId, task.getMenuId());
     }
 
+    //TODO: refactor
     private BotApiMethod<?> askUser(CallbackQuery callbackQuery, String taskId) {
         User teacher = userRepository.findUserByChatId(callbackQuery.getMessage().getChatId());
         List<User> students = teacher.getUsers();
@@ -365,6 +367,7 @@ public class TaskManager implements AbstractManager {
         );
     }
 
+    //TODO: refactor
     private BotApiMethod<?> editText(Message message, Long chatId, User user, Bot bot) {
         Task task = taskRepository.findTaskByUsersContainingAndIsInCreation(user, true);
         if (!message.hasText()) {

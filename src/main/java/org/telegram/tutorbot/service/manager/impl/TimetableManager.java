@@ -202,6 +202,7 @@ public class TimetableManager implements AbstractManager {
         );
     }
 
+    //TODO: refactor
     private BotApiMethod<?> addMinute(CallbackQuery callbackQuery, String[] splitCallbackData) {
         UUID timetableId = UUID.fromString(splitCallbackData[4]);
         Timetable timetable = timetableRepository.findTimetableById(timetableId);
@@ -274,6 +275,7 @@ public class TimetableManager implements AbstractManager {
         );
     }
 
+    //TODO: refactor
     private BotApiMethod<?> addTitle(CallbackQuery callbackQuery, String[] splitCallbackData) {
         String timetableId = splitCallbackData[3];
         Long chatId = callbackQuery.getMessage().getChatId();
@@ -298,6 +300,7 @@ public class TimetableManager implements AbstractManager {
                 keyboard);
     }
 
+    //TODO: refactor
     private BotApiMethod<?> addDescription(CallbackQuery callbackQuery, String[] splitCallbackData) {
         String timetableId = splitCallbackData[3];
         Long chatId = callbackQuery.getMessage().getChatId();

@@ -3,6 +3,8 @@ package org.telegram.tutorbot.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.telegram.tutorbot.model.enums.Role;
+import org.telegram.tutorbot.model.enums.TaskStatus;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -34,6 +36,12 @@ public class Task {
 
     @Column(name = "has_media")
     Boolean hasMedia;
+
+    @Column(name = "task_status")
+    private TaskStatus taskStatus;
+
+    @Column(name = "is_finished")
+    private Boolean isFinished;
 
     @ManyToMany
     @JoinTable(

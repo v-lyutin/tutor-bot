@@ -61,6 +61,7 @@ public class SearchManager implements AbstractManager {
         return null;
     }
 
+    //TODO: refactor
     @Override
     public BotApiMethod<?> answerCallbackQuery(CallbackQuery callbackQuery, Bot bot) {
         String callbackData = callbackQuery.getData();
